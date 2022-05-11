@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -g
 
 #---------------------------------------------------------------------------------------------------------------------
 
-#definig the directiries to be used
+#definig the directories to be used
 APP	:= app
 INCLUDE	:= include
 SRC	:= src
@@ -14,7 +14,7 @@ TEMP := temp
 
 #---------------------------------------------------------------------------------------------------------------------
 
-#defining OS specific commands 
+#defining OS specific commands
 ifeq ($(OS),Windows_NT)
 APPNAME	:= app.exe
 SOURCEDIR	:= $(SRC)
@@ -35,19 +35,28 @@ endif
 
 #---------------------------------------------------------------------------------------------------------------------
 
-#defiing source and object files
-SOURCES		:= $(wildcard $(patsubst %,%/*.c, $(SOURCEDIR)))
-OBJECTS		:= $(patsubst %,$(TEMPDIR)/%,$(SOURCEDIR))
+INCLUDES	:= $(patsubst %,-I%, $(INCLUDEDIRS:%/=%))
+SOURCES		:= $(wildcard $(addsuffix /*.c, $(SOURCEDIR))) #----------FIXME - may be broken
+OBJECTS		:= $($(SOURCES):%.c=$(TEMPDIR)/%.o) #----------FIXME - may be broken
+APPFILE	:= $(call FIXPATH,$(APP)/$(APPNAME))
 
 #---------------------------------------------------------------------------------------------------------------------
 
 #DO NOT EDIT ANYTHING BELOW THIS LINE
-all:
-	@echo "Building..."
+all:compile build run
 
-run: all
-	./app
-	@echo "Done!"
+compile:
+	@echo "Compiling..."
+	gcc -c  src/teste.c -I include/ -o temp/teste.o
+	gcc -c  src/main.c -I include/ -o temp/main.o
+
+build:
+	@echo "Building..."
+	gcc temp/*.o -I include/ -o app/app
+
+run:
+	./$(APPFILE)
+	@echo "All done!"
 
 clean:
 	$(RM) ./temp/*.o
