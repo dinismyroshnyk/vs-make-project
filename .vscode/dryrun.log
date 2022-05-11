@@ -1,0 +1,7 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/parrot-dev/Desktop/teste'
+gcc -Wall -Wextra -g -I include -o app temp/src/main.o temp/src/teste.o
+gcc -Wall -Wextra -g -I include -o app temp/src/main.o temp/src/teste.o
+echo "Building..."
+make: Leaving directory '/home/parrot-dev/Desktop/teste'
+ 
