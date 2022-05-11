@@ -20,6 +20,7 @@ APPNAME	:= app.exe
 SOURCEDIR	:= $(SRC)
 INCLUDEDIR	:= $(INCLUDE)
 TEMPDIR	:= $(TEMP)
+APPDIR	:= $(APP)
 FIXPATH	= $(subst /,\,$1)
 REMOVE	:= del /q /f
 MAKEDIR	:= mkdir
@@ -28,6 +29,7 @@ APPNAME	:= app
 SOURCEDIR	:= $(shell find $(SRC) -type d)
 INCLUDEDIR	:= $(shell find $(INCLUDE) -type d)
 TEMPDIR	:= $(shell find $(TEMP) -type d)
+APPDIR	:= $(shell find $(APP) -type d)
 FIXPATH = $1
 REMOVE = rm -f
 MAKEDIR	:= mkdir -p
@@ -35,10 +37,9 @@ endif
 
 #---------------------------------------------------------------------------------------------------------------------
 
-INCLUDES	:= $(patsubst %,-I%, $(INCLUDEDIRS:%/=%))
 SOURCES		:= $(wildcard $(addsuffix /*.c, $(SOURCEDIR))) #----------FIXME - may be broken
 OBJECTS		:= $($(SOURCES):%.c=$(TEMPDIR)/%.o) #----------FIXME - may be broken
-APPFILE	:= $(call FIXPATH,$(APP)/$(APPNAME))
+APPFILE	:= $(call FIXPATH,$(APPDIR)/$(APPNAME))
 
 #---------------------------------------------------------------------------------------------------------------------
 
@@ -47,18 +48,18 @@ all:compile build run
 
 compile:
 	@echo "Compiling..."
-	gcc -c  src/teste.c -I include/ -o temp/teste.o
-	gcc -c  src/main.c -I include/ -o temp/main.o
+	$(CC) $(CFLAGS) -c  $(SOURCEDIR)/teste.c -I $(INCLUDEDIR)/ -o $(TEMPDIR)/teste.o
+	$(CC) $(CFLAGS) -c  $(SOURCEDIR)/main.c -I $(INCLUDEDIR)/ -o $(TEMPDIR)/main.o
 
 build:
 	@echo "Building..."
-	gcc temp/*.o -I include/ -o app/app
+	$(CC) $(CFLAGS) $(TEMPDIR)/*.o -I $(INCLUDEDIR)/ -o $(APPDIR)/app
 
 run:
 	./$(APPFILE)
 	@echo "All done!"
 
 clean:
-	$(RM) ./temp/*.o
-	$(RM) ./app/*
+	$(REMOVE) ./temp/*.o
+	$(REMOVE) ./app/*
 	@echo "All cleaned"
