@@ -1,1 +1,2 @@
 void teste();
+void abc();

@@ -37,8 +37,6 @@ endif
 
 #---------------------------------------------------------------------------------------------------------------------
 
-SOURCES		:= $(wildcard $(addsuffix /*.c, $(SOURCEDIR))) #----------FIXME - may be broken
-OBJECTS		:= $($(SOURCES):%.c=$(TEMPDIR)/%.o) #----------FIXME - may be broken
 APPFILE	:= $(call FIXPATH,$(APPDIR)/$(APPNAME))
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -46,14 +44,13 @@ APPFILE	:= $(call FIXPATH,$(APPDIR)/$(APPNAME))
 #DO NOT EDIT ANYTHING BELOW THIS LINE
 all:compile build run
 
-compile:
-	@echo "Compiling..."
-	$(CC) $(CFLAGS) -c  $(SOURCEDIR)/teste.c -I $(INCLUDEDIR)/ -o $(TEMPDIR)/teste.o
-	$(CC) $(CFLAGS) -c  $(SOURCEDIR)/main.c -I $(INCLUDEDIR)/ -o $(TEMPDIR)/main.o
+compile:$(TEMPDIR)/main.o $(TEMPDIR)/teste.o $(TEMPDIR)/abc.o 
 
 build:
-	@echo "Building..."
-	$(CC) $(CFLAGS) $(TEMPDIR)/*.o -I $(INCLUDEDIR)/ -o $(APPDIR)/app
+	$(CC) $(CFLAGS) $(TEMPDIR)/*.o -I $(INCLUDEDIR) -o $(APPFILE)
+
+$(TEMPDIR)/%.o:$(SOURCEDIR)/%.c $(INCLUDEDIR)/*.h
+	$(CC) $(CFLAGS) -c $< -I $(INCLUDEDIR) -o $@
 
 run:
 	./$(APPFILE)
